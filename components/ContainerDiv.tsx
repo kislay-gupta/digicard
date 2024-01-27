@@ -12,7 +12,7 @@ export const ContainerDiv = ({ divId, particleId, children }: Props) => {
     <div>
       <div
         id={divId}
-        className="h-[40rem]  relative w-full bg-[#0D1117] flex flex-col items-center justify-center overflow-hidden"
+        className="h-screen  relative w-full bg-[#0D1117] flex flex-col items-center justify-center overflow-hidden"
       >
         <div className="w-full absolute inset-0 h-screen ">
           <SparklesCore
