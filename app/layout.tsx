@@ -6,6 +6,8 @@ const inter = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
 });
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: "Digicard",
@@ -19,7 +21,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="flex fixed m-auto z-50 justify-end">
+              <ThemeToggle />
+            </div>
+            {children}
+          </ThemeProvider>
+        </body>
+      </body>
     </html>
   );
 }

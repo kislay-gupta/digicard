@@ -1,5 +1,11 @@
 "use client";
-import { useScroll, motion, useSpring, useTransform } from "framer-motion";
+import {
+  useScroll,
+  motion,
+  useSpring,
+  useTransform,
+  easeIn,
+} from "framer-motion";
 
 const Scroll = () => {
   const { scrollYProgress } = useScroll();
@@ -26,6 +32,7 @@ const Scroll = () => {
         width: "100%",
         height: "3px",
       }}
+      transition={easeIn}
     >
       <div
         style={{

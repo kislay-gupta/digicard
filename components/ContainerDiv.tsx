@@ -14,7 +14,7 @@ export const ContainerDiv = ({ divId, particleId, children }: Props) => {
         id={divId}
         className="h-screen  relative w-full bg-[#0D1117] flex flex-col items-center justify-center overflow-hidden"
       >
-        <div className="w-full absolute inset-0 h-screen ">
+        {/* <div className="w-full absolute inset-0 h-screen ">
           <SparklesCore
             id={particleId}
             background="transparent"
@@ -24,10 +24,10 @@ export const ContainerDiv = ({ divId, particleId, children }: Props) => {
             className="w-full h-full"
             particleColor="#FFFFFF"
           />
-        </div>
+        </div> */}
         <AnimatePresence>
           <motion.div
-            className="z-50"
+            className="z-50 "
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: [50, 0] }}
             transition={{ duration: 1, ease: "easeInOut" }}
