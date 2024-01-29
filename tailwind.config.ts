@@ -38,7 +38,7 @@ const config = {
           500: "#7B8EC8",
           400: "#858EAD",
         },
-        "accent-blue": "#1DA1F2",
+        accent: "#1DA1F2",
       },
       keyframes: {
         "accordion-down": {

@@ -29,7 +29,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="flex fixed m-auto z-50 justify-end">
+            <div className=" fixed bottom-2 left-4 m-auto z-50 ">
               <ThemeToggle />
             </div>
             {children}
