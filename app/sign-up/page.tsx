@@ -1,12 +1,12 @@
 import SignUp from "@/components/form/SignUp";
 import React from "react";
 
-const Page = () => {
+const page = () => {
   return (
-    <>
+    <div>
       <SignUp />
-    </>
+    </div>
   );
 };
 
-export default Page;
+export default page;

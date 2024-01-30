@@ -7,6 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import * as LR from "@uploadcare/blocks";
+
+LR.registerBlocks(LR);
+
 import {
   Form,
   FormControl,
@@ -17,18 +21,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-const type: any = "create";
-import {
-  useScroll,
-  motion,
-  useSpring,
-  useTransform,
-  easeIn,
-  SpringOptions,
-} from "framer-motion";
+
 import { UserSchema } from "@/lib/validation";
 import { createUser } from "@/lib/action/user.action";
-import { Widget } from "@uploadcare/react-widget";
+// import { Widget } from "@uploadcare/react-widget";
 
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -133,10 +129,25 @@ const SignUp = () => {
                     <FormItem>
                       <FormLabel>photo Name</FormLabel>
                       <FormControl className="">
-                        <Widget
+                        <div>
+                          <lr-config
+                            ctx-name="my-uploader"
+                            pubkey="736a13ce3cead6b559ab"
+                            img-only="true"
+                            max-local-file-size-bytes="524288000"
+                            use-cloud-image-editor="true"
+                            source-list="local, url, camera, dropbox"
+                          ></lr-config>
+
+                          <lr-file-uploader-regular
+                            ctx-name="my-uploader"
+                            css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.30.9/web/lr-file-uploader-regular.min.css"
+                          ></lr-file-uploader-regular>
+                        </div>
+                        {/* <Widget
                           publicKey="736a13ce3cead6b559ab"
                           onChange={(info) => field.onChange(info.cdnUrl)}
-                        />
+                        /> */}
                       </FormControl>
                       <FormDescription>
                         This is your public display name.
@@ -383,21 +394,11 @@ const SignUp = () => {
                   type="submit"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? (
-                    <>{type === "edit" ? "Editing..." : "Posting..."}</>
-                  ) : (
-                    <>{type === "edit" ? "Edit Question" : "Ask a Question"}</>
-                  )}
+                  {isSubmitting ? <>Submitting ....</> : <>Submit</>}
                 </Button>
               </div>
             </div>
           </ContainerDiv>
-          <Button
-            className="primary-gradient z-50 w-fit !text-light-900"
-            type="submit"
-          >
-            submit
-          </Button>
         </form>
       </Form>
     </div>
