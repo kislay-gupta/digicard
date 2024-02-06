@@ -107,7 +107,7 @@ const SignUp = () => {
         companyWebsite: values.companyWebsite,
         designation: values.designation,
       });
-      router.push("/users");
+      router.push("/user");
       toast.success("registration successful");
     } catch (error) {
       setIsSubmitting(false);
