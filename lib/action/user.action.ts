@@ -47,11 +47,11 @@ export async function createUser(params: UserParams) {
   }
 }
 
-export async function getAllUser(params: any) {
+export async function getAllUser() {
   try {
     connectToDatabase();
 
-    const users = await User.find({}).sort({ params });
+    const users = await User.find().sort({ createdAt: -1 });
 
     return { users };
   } catch (error) {
