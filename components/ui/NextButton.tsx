@@ -2,13 +2,14 @@ import Link from "next/link";
 import React from "react";
 
 interface Props {
+  text: string;
   lnk: string;
 }
-const NextButton = ({ lnk }: Props) => {
+const NextButton = ({ text, lnk }: Props) => {
   return (
     <div className="flex gap-1">
       <Link
-        className="group   relative bg-primary-500 inline-flex items-center overflow-hidden rounded px-8 py-3 text-dark-600 focus:outline-none focus:ring active:text-dark-500"
+        className="group   relative bg-primary-500 inline-flex items-center overflow-hidden rounded px-8 py-3 text-dark-600 focus:outline-none  active:text-dark-500"
         href={`#${lnk}`}
       >
         <span className="absolute -end-full transition-all group-hover:end-4">
@@ -29,12 +30,14 @@ const NextButton = ({ lnk }: Props) => {
         </span>
         <span className="text-sm font-medium transition-all group-hover:me-4">
           {" "}
-          Next{" "}
+          {text}{" "}
         </span>
       </Link>
-      <p className="max-sm:hidden my-auto ml-2 small-bold text-zinc-50">
-        press <strong>Enter ↵ </strong>{" "}
-      </p>
+      {text === "next" && (
+        <p className="max-sm:hidden my-auto ml-2 small-bold text-zinc-50">
+          press <strong>Enter ↵ </strong>{" "}
+        </p>
+      )}
     </div>
   );
 };

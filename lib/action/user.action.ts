@@ -2,7 +2,10 @@
 
 import User from "@/database/user.model";
 import { connectToDatabase } from "../mongoose";
-import { UserParams } from "../shared.types";
+import { GetUserByIdParams, UserParams } from "../shared.types";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import mongoose from "mongoose";
 
 export async function createUser(params: UserParams) {
   try {
@@ -14,12 +17,12 @@ export async function createUser(params: UserParams) {
       personalPhoneNumber,
       personalWhatsapp,
       companyName,
-      companyPhoneNumber,
-      companyWhatsappNumber,
       companyInstagram,
       facebookPageId,
-      telegramChannel,
       companyWebsite,
+      designation,
+      aboutCompany,
+      companyPhoto,
     } = params;
 
     const user = await User.create({
@@ -29,12 +32,12 @@ export async function createUser(params: UserParams) {
       personalPhoneNumber,
       personalWhatsapp,
       companyName,
-      companyPhoneNumber,
-      companyWhatsappNumber,
       companyInstagram,
       facebookPageId,
-      telegramChannel,
       companyWebsite,
+      designation,
+      aboutCompany,
+      companyPhoto,
     });
   } catch (error) {
     console.log(error);
@@ -53,13 +56,30 @@ export async function getAllUser(params: any) {
     throw error;
   }
 }
-export async function getUserById(userId: string) {
+export async function getUserById(params: GetUserByIdParams) {
   try {
     connectToDatabase();
-    const user = await User.findById(userId);
+    const { userId } = params;
+    console.log(userId, "user id");
+    const objectId = new mongoose.Types.ObjectId(userId);
+
+    const user = await User.findOne({ _id: objectId });
+
+    if (!user) {
+      // User not found, redirect to the desired page
+      return redirect("/user-not-found"); // Assuming you're using Express
+    }
+
     return { user };
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
-    throw error;
+
+    // Handle other errors (e.g., database connection issues) and potentially redirect to different pages
+    if (error.message === "user not found") {
+      return redirect("/user-not-found");
+    } else {
+      // Handle other errors as needed, potentially with different redirects
+      return redirect("/error");
+    }
   }
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Poppins({
   subsets: ["latin"],
@@ -22,19 +23,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className=" fixed bottom-2 left-4 m-auto z-50 ">
-              <ThemeToggle />
-            </div>
-            {children}
-          </ThemeProvider>
-        </body>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <div className=" fixed bottom-2 left-4 m-auto z-50 ">
+            <ThemeToggle />
+          </div>
+          {children}
+          <Toaster closeButton richColors position="top-right" />
+        </ThemeProvider>
       </body>
     </html>
   );

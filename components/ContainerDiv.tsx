@@ -4,7 +4,7 @@ import SparklesCore from "./SparklesCore";
 import { AnimatePresence, motion } from "framer-motion";
 interface Props {
   divId: string;
-  particleId: string;
+  particleId?: string;
   children: React.ReactNode;
 }
 export const ContainerDiv = ({ divId, particleId, children }: Props) => {
@@ -15,7 +15,7 @@ export const ContainerDiv = ({ divId, particleId, children }: Props) => {
         className="h-screen  relative w-full bg-[#0D1117] flex flex-col items-center justify-center overflow-hidden"
       >
         <div className="w-full absolute inset-0 h-screen ">
-          <SparklesCore
+          {/* <SparklesCore
             id={particleId}
             background="transparent"
             minSize={0.6}
@@ -23,7 +23,7 @@ export const ContainerDiv = ({ divId, particleId, children }: Props) => {
             particleDensity={50}
             className="w-full h-full"
             particleColor="#FFFFFF"
-          />
+          /> */}
         </div>
         <AnimatePresence>
           <motion.div

@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -12,11 +13,24 @@ import { FaInstagram } from "react-icons/fa6";
 import { CiLinkedin } from "react-icons/ci";
 import { TbWorldWww } from "react-icons/tb";
 import { FaRegShareSquare } from "react-icons/fa";
+import { SlSocialFacebook } from "react-icons/sl";
+import { usePathname } from "next/navigation";
+import { toast } from "sonner";
 
 const UserCard = ({ data }: Props) => {
+  const pathname = usePathname();
+  const handleCopyClick = async () => {
+    try {
+      await navigator.clipboard.writeText(`localhost:3000${pathname}`);
+      toast.info("Profile link Copied to clipboard!");
+    } catch (err) {
+      console.error("Unable to copy to clipboard.", err);
+      toast("Copy to clipboard failed.");
+    }
+  };
   return (
     <>
-      <div className="xl:hidden">
+      <div className="">
         <div
           className="rounded-lg border  bg-card text-card-foreground shadow-sm w-full max-w-sm mx-auto"
           data-v0-t="card"
@@ -25,9 +39,8 @@ const UserCard = ({ data }: Props) => {
             <div className="h-24  w-full">
               {data.photo ? (
                 <div className="flex-center">
-                  {" "}
                   <Image
-                    src={data.photo}
+                    src={data.companyPhoto}
                     width={500}
                     height={500}
                     alt="profile pic"
@@ -47,17 +60,20 @@ const UserCard = ({ data }: Props) => {
                   alt="profile pic"
                   className="rounded-full h-32 w-32 border border-primary-500 object-cover"
                 />
-                <div className="fixed top-64 right-2 z-50 ">
+                <button
+                  onClick={handleCopyClick}
+                  className="fixed max-sm:top-64 lg:bottom-0 max-sm:right-2 z-50 "
+                >
                   <FaRegShareSquare />
-                </div>
+                </button>
               </div>
             </div>
             <div className="text-center">
               <h3 className="whitespace-nowrap mt-16 h2-bold text-light900_dark300">
-                Kislay kumar Gupta
+                {data.name}
               </h3>
-              <p className="paragraph-semibold text-light-400_light500">
-                xyz @ {data.companyName}
+              <p className="paragraph-semibold capitalize text-light-400_light500">
+                {data.designation}@{data.companyName}
               </p>
             </div>
           </div>
@@ -70,8 +86,8 @@ const UserCard = ({ data }: Props) => {
               }
             />
             <DetailBadge
-              detail={data.companyWhatsappNumber}
-              detailLink={`tel:${data.personalPhoneNumber}`}
+              detail={data.personalWhatsapp}
+              detailLink={`https://wa.me/${data.personalWhatsapp}`}
               icon={<FaWhatsapp className="m-auto  h-5 w-5 " />}
             />
 
@@ -82,8 +98,8 @@ const UserCard = ({ data }: Props) => {
             />
             <DetailBadge
               detail={"kislay"}
-              detailLink={`https://www.linkedin.com/in/${data.personalPhoneNumber}`}
-              icon={<CiLinkedin className="m-auto  h-5 w-5 " />}
+              detailLink={`${data.facebookPageId}`}
+              icon={<SlSocialFacebook className="m-auto  h-5 w-5 " />}
             />
             <div className="col-span-full gap-2 justify-items-center mx-auto">
               <div className="py-2">
@@ -95,7 +111,7 @@ const UserCard = ({ data }: Props) => {
               </div>
               <div>
                 <DetailBadge
-                  detail={"www.company.com"}
+                  detail={data.companyWebsite}
                   detailLink={`${data.companyWebsite}`}
                   icon={<TbWorldWww className="m-auto  h-5 w-5 " />}
                 />
@@ -105,6 +121,7 @@ const UserCard = ({ data }: Props) => {
               <span className="ml-2 h2-bold text-gray-900 dark:text-gray-50">
                 About {data.companyName}
               </span>
+              <p className="paragraph-regular my-5">{data.aboutCompany}</p>
             </div>
           </div>
           <div className="items-center p-6 flex justify-center">

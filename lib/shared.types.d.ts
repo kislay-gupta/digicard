@@ -3,15 +3,20 @@ import { IUser } from "@/mongodb";
 
 export interface UserParams {
   fullName: string;
+  designation: string;
   email: string;
   photo: string;
   personalPhoneNumber: string;
   personalWhatsapp: string;
   companyName: string;
-  companyPhoneNumber: string;
-  companyWhatsappNumber: string;
+  aboutCompany?: string;
+  companyPhoto?: string;
   companyInstagram?: string;
   facebookPageId?: string;
-  telegramChannel?: string;
+
   companyWebsite?: string;
+}
+
+export interface GetUserByIdParams {
+  userId: string;
 }

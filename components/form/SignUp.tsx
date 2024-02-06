@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ContainerDiv } from "../ContainerDiv";
 import NextButton from "../ui/NextButton";
 import { useRouter } from "next/navigation";
@@ -7,9 +7,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import * as LR from "@uploadcare/blocks";
-
-LR.registerBlocks(LR);
 
 import {
   Form,
@@ -26,8 +23,18 @@ import { UserSchema } from "@/lib/validation";
 import { createUser } from "@/lib/action/user.action";
 // import { Widget } from "@uploadcare/react-widget";
 
+import Image from "next/image";
+import * as LR from "@uploadcare/blocks";
+import router from "next/router";
+import { Textarea } from "../ui/textarea";
+import { toast } from "sonner";
+
+LR.registerBlocks(LR);
+
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [companyPhotoUrl, setCompanyPhotoUrl] = useState<string>();
+  const [uploadcareData, setUploadcareData] = useState<string>("");
   const router = useRouter();
   const form = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
@@ -35,18 +42,52 @@ const SignUp = () => {
       fullName: "",
       email: "",
       photo: "",
+      designation: "",
       personalPhoneNumber: "",
       personalWhatsapp: "",
       companyName: "",
-      companyPhoneNumber: "",
-      companyWhatsappNumber: "",
       companyInstagram: "",
       facebookPageId: "",
-      telegramChannel: "",
       companyWebsite: "",
+      companyPhoto: "",
     },
   });
+  useEffect(() => {
+    // Check if document is defined (browser environment)
+    document.body.style.overflow = "hidden";
+    if (typeof document !== "undefined") {
+      const ctx = document.querySelector("#profipic") as HTMLElement | null;
 
+      if (ctx) {
+        ctx.addEventListener("data-output", (e) => {
+          // Use type assertion to let TypeScript know it's a CustomEvent
+          const customEvent = e as CustomEvent;
+
+          if (customEvent.detail) {
+            console.log(customEvent.detail, "profile pic");
+            setUploadcareData(customEvent.detail[0]?.cdnUrl);
+          }
+        });
+      }
+    }
+    if (typeof document !== "undefined") {
+      const ctx2 = document.querySelector("#companylogo") as HTMLElement | null;
+
+      if (ctx2) {
+        ctx2.addEventListener("data-output", (e) => {
+          // Use type assertion to let TypeScript know it's a CustomEvent
+          const customEvent2 = e as CustomEvent;
+
+          console.log(customEvent2, "companylogo event triggered");
+          if (customEvent2.detail) {
+            console.log(customEvent2.detail, "companylogo");
+            setCompanyPhotoUrl(customEvent2.detail[0]?.cdnUrl);
+          }
+        });
+      }
+    }
+  }, []);
+  console.log(companyPhotoUrl, "company url");
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof UserSchema>) {
     setIsSubmitting(true);
@@ -54,23 +95,30 @@ const SignUp = () => {
       await createUser({
         fullName: values.fullName,
         email: values.email,
-        photo: values.photo,
+        photo: uploadcareData,
+        companyPhoto: companyPhotoUrl,
         personalPhoneNumber: values.personalPhoneNumber,
         personalWhatsapp: values.personalWhatsapp,
         companyName: values.companyName,
-        companyPhoneNumber: values.companyPhoneNumber,
-        companyWhatsappNumber: values.companyWhatsappNumber,
         companyInstagram: values.companyInstagram,
+        aboutCompany: values.aboutCompany,
         facebookPageId: values.facebookPageId,
-        telegramChannel: values.telegramChannel,
         companyWebsite: values.companyWebsite,
+        designation: values.designation,
       });
-      router.push("/");
-    } catch (error) {}
+      router.push("/users");
+      toast.success("registration successful");
+    } catch (error) {
+      setIsSubmitting(false);
+      console.log(error);
+      toast.warning("registration failed");
+      console.log(values);
+    }
     console.log(values);
   }
+  // console.log(form.getValues, "kislay");
   return (
-    <div className="">
+    <div className="no-scrollbar example-element">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <ContainerDiv divId="firstName" particleId="1">
@@ -92,7 +140,247 @@ const SignUp = () => {
                     </FormItem>
                   )}
                 />
-                <NextButton lnk="email" />
+                <NextButton text="next" lnk="photo" />
+              </div>
+            </div>
+          </ContainerDiv>
+          <ContainerDiv divId="photo" particleId="01">
+            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+              {uploadcareData && (
+                <>
+                  <div className="max-w-2xl  mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
+                    <div className="rounded-t-lg h-32 overflow-hidden">
+                      <Image
+                        height={500}
+                        width={500}
+                        className="object-cover object-top w-full"
+                        src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
+                        alt="Mountain"
+                      />
+                    </div>
+                    <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
+                      <Image
+                        className="rounded-full h-32 w-32 border border-primary-500 object-cover"
+                        src={uploadcareData ? uploadcareData : ""}
+                        alt="profile pic"
+                        height={500}
+                        width={400}
+                      />
+                    </div>
+                    <div className="text-center mt-2">
+                      <p className="text-gray-500">Your image preview</p>
+                    </div>
+
+                    <div className="p-4 border-t mx-8 mt-2"></div>
+                  </div>
+                </>
+              )}
+              <div>
+                <FormField
+                  control={form.control}
+                  name="photo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel> profile pic</FormLabel>
+                      <FormControl className="">
+                        <>
+                          <lr-config
+                            ctx-name="profipic"
+                            pubkey="c691bad6580f6ff10d39"
+                            maxLocalFileSizeBytes={10000000}
+                            multiple={false}
+                            imgOnly={true}
+                            sourceList="local, url, camera"
+                          ></lr-config>
+                          <lr-file-uploader-regular
+                            css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.30.5/web/lr-file-uploader-regular.min.css"
+                            ctx-name="profipic"
+                            class="my-config"
+                          ></lr-file-uploader-regular>
+                          <lr-data-output
+                            ctx-name="profipic"
+                            use-event
+                          ></lr-data-output>
+                          <lr-upload-ctx-provider
+                            id="profipic"
+                            ctx-name="profipic"
+                          ></lr-upload-ctx-provider>
+                        </>
+                      </FormControl>
+                      <FormDescription>
+                        This is your public display Picture.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex gap-2">
+                <NextButton text="previous" lnk="firstName" />
+                <NextButton text="next" lnk="companyName" />
+              </div>
+            </div>
+          </ContainerDiv>
+          <ContainerDiv divId="companyName" particleId="2">
+            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+              <div className="ma">
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company Name</FormLabel>
+                      <FormControl className="">
+                        <Input placeholder="Type your answer" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        This is your public display name.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex gap-2">
+                  <NextButton text="previous" lnk="photo" />
+                  <NextButton text="next" lnk="designation" />
+                </div>
+              </div>
+            </div>
+          </ContainerDiv>
+          <ContainerDiv divId="designation" particleId="2">
+            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+              <div className="ma">
+                <FormField
+                  control={form.control}
+                  name="designation"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>your designation</FormLabel>
+                      <FormControl className="">
+                        <Input placeholder="Type your answer" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        what is your position at your company.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex gap-2">
+                  <NextButton text="previous" lnk="companyName" />
+                  <NextButton text="next" lnk="companyPhoto" />
+                </div>
+              </div>
+            </div>
+          </ContainerDiv>
+          <ContainerDiv divId="companyPhoto" particleId="010">
+            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+              {companyPhotoUrl && (
+                <>
+                  <div className="max-w-2xl  mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
+                    <div className="rounded-t-lg h-32 overflow-hidden">
+                      <Image
+                        height={500}
+                        width={500}
+                        className="object-cover object-top w-full"
+                        src={
+                          companyPhotoUrl
+                            ? `${companyPhotoUrl}`
+                            : "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
+                        }
+                        alt="Mountain"
+                      />
+                    </div>
+                    <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
+                      <Image
+                        className="rounded-full h-32 w-32 border border-primary-500 object-cover"
+                        src={uploadcareData ? uploadcareData : ""}
+                        alt="profile pic"
+                        height={500}
+                        width={400}
+                      />
+                    </div>
+                    <div className="text-center mt-2">
+                      <p className="text-gray-500">Your image preview</p>
+                    </div>
+
+                    <div className="p-4 border-t mx-8 mt-2"></div>
+                  </div>
+                </>
+              )}
+              <div>
+                <FormField
+                  control={form.control}
+                  name="companyPhoto"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>company logo</FormLabel>
+                      <FormControl className="">
+                        <>
+                          <lr-config
+                            ctx-name="companylogo"
+                            pubkey="c691bad6580f6ff10d39"
+                            maxLocalFileSizeBytes={10000000}
+                            multiple={false}
+                            imgOnly={true}
+                            sourceList="local, url, camera"
+                          ></lr-config>
+                          <lr-file-uploader-regular
+                            css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.30.5/web/lr-file-uploader-regular.min.css"
+                            ctx-name="companylogo"
+                            class="my-config"
+                          ></lr-file-uploader-regular>
+                          <lr-data-output
+                            ctx-name="companylogo"
+                            use-event
+                          ></lr-data-output>
+                          <lr-upload-ctx-provider
+                            id="companylogo"
+                            ctx-name="companylogo"
+                          ></lr-upload-ctx-provider>
+                        </>
+                      </FormControl>
+                      <FormDescription>
+                        This is your public display name.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex gap-2">
+                <NextButton text="previous" lnk="designation" />
+                <NextButton text="next" lnk="aboutCompany" />
+              </div>
+            </div>
+          </ContainerDiv>
+          <ContainerDiv divId="aboutCompany" particleId="aboutCompany">
+            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+              <div className="max-sm:mx-4 md:w-[70vw]">
+                <FormField
+                  control={form.control}
+                  name="aboutCompany"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>about Company</FormLabel>
+                      <FormControl className="">
+                        <Textarea
+                          rows={10}
+                          placeholder="write about your company"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        This is your public display email.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex gap-2">
+                  <NextButton text="previous" lnk="companyPhoto" />
+                  <NextButton text="next" lnk="email" />
+                </div>
               </div>
             </div>
           </ContainerDiv>
@@ -115,51 +403,14 @@ const SignUp = () => {
                     </FormItem>
                   )}
                 />
-                <NextButton lnk="personalPhoneNumber" />
+                <div className="flex gap-2">
+                  <NextButton text="previous" lnk="aboutCompany" />
+                  <NextButton text="next" lnk="personalPhoneNumber" />
+                </div>
               </div>
             </div>
           </ContainerDiv>
-          <ContainerDiv divId="firstName" particleId="01">
-            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
-              <div className="ma">
-                <FormField
-                  control={form.control}
-                  name="photo"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>photo Name</FormLabel>
-                      <FormControl className="">
-                        <div>
-                          <lr-config
-                            ctx-name="my-uploader"
-                            pubkey="736a13ce3cead6b559ab"
-                            img-only="true"
-                            max-local-file-size-bytes="524288000"
-                            use-cloud-image-editor="true"
-                            source-list="local, url, camera, dropbox"
-                          ></lr-config>
 
-                          <lr-file-uploader-regular
-                            ctx-name="my-uploader"
-                            css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.30.9/web/lr-file-uploader-regular.min.css"
-                          ></lr-file-uploader-regular>
-                        </div>
-                        {/* <Widget
-                          publicKey="736a13ce3cead6b559ab"
-                          onChange={(info) => field.onChange(info.cdnUrl)}
-                        /> */}
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <NextButton lnk="email" />
-              </div>
-            </div>
-          </ContainerDiv>
           <ContainerDiv divId="personalPhoneNumber" particleId="3">
             <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
               <div className="max-sm:mx-4">
@@ -168,11 +419,7 @@ const SignUp = () => {
                   name="personalPhoneNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        Mobile No.
-                        <br className="md:hidden" />
-                        (personal)
-                      </FormLabel>
+                      <FormLabel>Mobile No.</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -188,7 +435,10 @@ const SignUp = () => {
                     </FormItem>
                   )}
                 />
-                <NextButton lnk="personalWhatsApp" />
+                <div className="flex gap-2">
+                  <NextButton text="previous" lnk="email" />
+                  <NextButton text="next" lnk="personalWhatsApp" />
+                </div>
               </div>
             </div>
           </ContainerDiv>
@@ -200,11 +450,7 @@ const SignUp = () => {
                   name="personalWhatsapp"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>
-                        Whatsapp no.
-                        <br className="md:hidden" />
-                        (personal)
-                      </FormLabel>
+                      <FormLabel>Whatsapp no.</FormLabel>
                       <FormControl className="">
                         <Input
                           type="number"
@@ -220,87 +466,14 @@ const SignUp = () => {
                     </FormItem>
                   )}
                 />
-                <NextButton lnk="companyName" />
+                <div className="flex gap-2">
+                  <NextButton text="previous" lnk="personalPhoneNumber" />
+                  <NextButton text="next" lnk="companyInstagram" />
+                </div>
               </div>
             </div>
           </ContainerDiv>
-          <ContainerDiv divId="companyName" particleId="5">
-            <div className="h-screen grid grid-cols-1 content-center justify-items-stretch ">
-              <div className="max-sm:mx-4">
-                <FormField
-                  control={form.control}
-                  name="companyName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>company Name</FormLabel>
-                      <FormControl className="">
-                        <Input placeholder="Type your answer" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <NextButton lnk="companyWhatsAppNumber" />
-              </div>
-            </div>
-          </ContainerDiv>
-          <ContainerDiv divId="companyWhatsAppNumber" particleId="7">
-            <div className="h-screen grid grid-cols-1 content-center justify-items-stretch">
-              <div className="max-sm:mx-4">
-                <FormField
-                  control={form.control}
-                  name="companyPhoneNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        Mobile No.
-                        <br className="md:hidden" />
-                        (company)
-                      </FormLabel>
-                      <FormControl className="">
-                        <Input placeholder="Type your answer" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <NextButton lnk="companyInstagram" />
-              </div>
-            </div>
-          </ContainerDiv>
-          <ContainerDiv divId="companyWhatsAppNumber" particleId="7">
-            <div className="h-screen grid grid-cols-1 content-center justify-items-stretch">
-              <div className="max-sm:mx-4">
-                <FormField
-                  control={form.control}
-                  name="companyWhatsappNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        WhatsApp No.
-                        <br className="md:hidden" />
-                        (company)
-                      </FormLabel>
-                      <FormControl className="">
-                        <Input placeholder="Type your answer" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <NextButton lnk="companyInstagram" />
-              </div>
-            </div>
-          </ContainerDiv>
+
           <ContainerDiv divId="companyInstagram" particleId="8">
             <div className="h-screen grid grid-cols-1 content-center justify-items-stretch">
               <div className="max-sm:mx-4">
@@ -320,7 +493,10 @@ const SignUp = () => {
                     </FormItem>
                   )}
                 />
-                <NextButton lnk="companyFacebookPage" />
+                <div className="flex gap-2">
+                  <NextButton text="previous" lnk="personalWhatsApp" />
+                  <NextButton text="next" lnk="companyFacebookPage" />
+                </div>
               </div>
             </div>
           </ContainerDiv>
@@ -332,7 +508,7 @@ const SignUp = () => {
                   name="facebookPageId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Facebook Page</FormLabel>
+                      <FormLabel>Facebook Id</FormLabel>
                       <FormControl className="">
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
@@ -343,33 +519,14 @@ const SignUp = () => {
                     </FormItem>
                   )}
                 />
-                <NextButton lnk="telegramChannel" />
+                <div className="flex gap-2">
+                  <NextButton text="previous" lnk="companyInstagram" />
+                  <NextButton text="next" lnk="companyWebsite" />
+                </div>
               </div>
             </div>
           </ContainerDiv>
-          <ContainerDiv divId="telegramChannel" particleId="10">
-            <div className="h-screen grid grid-cols-1 content-center justify-items-stretch">
-              <div className="max-sm:mx-4">
-                <FormField
-                  control={form.control}
-                  name="telegramChannel"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>telegram Channel</FormLabel>
-                      <FormControl className="">
-                        <Input placeholder="Type your answer" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <NextButton lnk="companyWebsite" />
-              </div>
-            </div>
-          </ContainerDiv>
+
           <ContainerDiv divId="companyWebsite" particleId="11">
             <div className="h-screen grid  grid-cols-1 content-center justify-items-stretch">
               <div className="max-sm:mx-4">
@@ -389,13 +546,16 @@ const SignUp = () => {
                     </FormItem>
                   )}
                 />
-                <Button
-                  className="primary-gradient z-50 w-fit !text-light-900"
-                  type="submit"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? <>Submitting ....</> : <>Submit</>}
-                </Button>
+                <div className="flex gap-2">
+                  <NextButton text="previous" lnk="companyFacebookPage" />
+                  <Button
+                    className="primary-gradient z-50 w-fit !text-light-900"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? <>Submitting ....</> : <>Submit</>}
+                  </Button>
+                </div>
               </div>
             </div>
           </ContainerDiv>

@@ -7,6 +7,16 @@
 body {
   font-family: "Inter", sans-serif;
 }
+.example-element {
+  overflow-x: none;
+  overflow-y: none;
+}
+.my-config {
+  --darkmode: 0;
+  --h-accent: 223;
+  --s-accent: 100%;
+  --l-accent: 61%;
+}
 
 @layer utilities {
   .flex-center {
