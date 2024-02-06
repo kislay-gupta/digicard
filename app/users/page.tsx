@@ -7,7 +7,7 @@ const Page = async () => {
   console.log(results, "all user");
   return (
     <div className="flex flex-col gap-2 mt-11">
-      {results.users.toReversed().map((data) => (
+      {results.users.map((data) => (
         <Link href={`/user/${data._id}`} key={data._id}>
           {data.fullName}
         </Link>
