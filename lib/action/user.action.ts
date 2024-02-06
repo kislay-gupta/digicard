@@ -39,6 +39,7 @@ export async function createUser(params: UserParams) {
       aboutCompany,
       companyPhoto,
     });
+    return user;
     revalidatePath("/users");
   } catch (error) {
     console.log(error);
