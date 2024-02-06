@@ -50,7 +50,8 @@ export async function createUser(params: UserParams) {
 export async function getAllUser(params: any) {
   try {
     connectToDatabase();
-    const users = await User.find({}).sort({ createdAt: -1 });
+
+    const users = await User.find({}).sort({ params });
 
     return { users };
   } catch (error) {
