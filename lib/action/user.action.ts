@@ -39,8 +39,8 @@ export async function createUser(params: UserParams) {
       aboutCompany,
       companyPhoto,
     });
-    return user;
     revalidatePath("/users");
+    return user;
   } catch (error) {
     console.log(error);
     throw error;
