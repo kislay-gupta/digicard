@@ -28,6 +28,7 @@ import * as LR from "@uploadcare/blocks";
 import router from "next/router";
 import { Textarea } from "../ui/textarea";
 import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 LR.registerBlocks(LR);
 
@@ -234,7 +235,7 @@ const SignUp = () => {
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
                       <FormDescription>
-                        This is your public display name.
+                        This is your public Company name.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -341,7 +342,7 @@ const SignUp = () => {
                         </>
                       </FormControl>
                       <FormDescription>
-                        This is your public display name.
+                        This is your public Company logo.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -366,12 +367,12 @@ const SignUp = () => {
                       <FormControl className="">
                         <Textarea
                           rows={10}
-                          placeholder="write about your company"
+                          placeholder="write about your company in 10 to 500 words"
                           {...field}
                         />
                       </FormControl>
                       <FormDescription>
-                        This is your public display email.
+                        Write about your company in 10 to 500 words.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -429,7 +430,7 @@ const SignUp = () => {
                         />
                       </FormControl>
                       <FormDescription>
-                        This is your public display name.
+                        This is your public Mobile no.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -460,7 +461,7 @@ const SignUp = () => {
                         />
                       </FormControl>
                       <FormDescription>
-                        This is your public display name.
+                        This is your public Whatsapp no.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -487,7 +488,7 @@ const SignUp = () => {
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
                       <FormDescription>
-                        This is your public display name.
+                        This is your public Instagram.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -513,7 +514,8 @@ const SignUp = () => {
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
                       <FormDescription>
-                        This is your public display name.
+                        This is your public Facebook Id(paste url id&#39;s url
+                        not user id).
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -540,7 +542,7 @@ const SignUp = () => {
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
                       <FormDescription>
-                        This is your public display name.
+                        This is your public Company Website.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -553,7 +555,15 @@ const SignUp = () => {
                     type="submit"
                     disabled={isSubmitting}
                   >
-                    {isSubmitting ? <>Submitting ....</> : <>Submit</>}
+                    {isSubmitting ? (
+                      <>
+                        {" "}
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Submitting ....
+                      </>
+                    ) : (
+                      <>Submit</>
+                    )}
                   </Button>
                 </div>
               </div>
