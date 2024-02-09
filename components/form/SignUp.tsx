@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-
+import styles from "../../app/sign-up/Sign.module.css";
 import {
   Form,
   FormControl,
@@ -34,7 +34,7 @@ LR.registerBlocks(LR);
 
 const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [companyPhotoUrl, setCompanyPhotoUrl] = useState<string>();
+  const [companyPhotoUrl, setCompanyPhotoUrl] = useState<string>("");
   const [uploadcareData, setUploadcareData] = useState<string>("");
   const router = useRouter();
   const form = useForm<z.infer<typeof UserSchema>>({
@@ -42,7 +42,7 @@ const SignUp = () => {
     defaultValues: {
       fullName: "",
       email: "",
-      photo: "",
+      photo: uploadcareData,
       designation: "",
       personalPhoneNumber: "",
       personalWhatsapp: "",
@@ -50,7 +50,7 @@ const SignUp = () => {
       companyInstagram: "",
       facebookPageId: "",
       companyWebsite: "",
-      companyPhoto: "",
+      companyPhoto: companyPhotoUrl,
     },
   });
   useEffect(() => {
@@ -87,11 +87,23 @@ const SignUp = () => {
         });
       }
     }
+    const preventScroll = (e: Event) => {
+      e.preventDefault();
+    };
+
+    // Add event listener to disable scroll
+    document.body.addEventListener("touchmove", preventScroll, {
+      passive: false,
+    });
+    document.body.addEventListener("wheel", preventScroll, { passive: false });
+
+    // Remove event listener on component unmount
   }, []);
   console.log(companyPhotoUrl, "company url");
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof UserSchema>) {
     setIsSubmitting(true);
+
     try {
       await createUser({
         fullName: values.fullName,
@@ -119,18 +131,20 @@ const SignUp = () => {
   }
   // console.log(form.getValues, "kislay");
   return (
-    <div className="no-scrollbar example-element">
+    <div className={` ${styles.body}`} style={{ overflow: "hidden" }}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <ContainerDiv divId="firstName" particleId="1">
-            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
-              <div className="ma">
+            <div className="h-screen max-sm:mx-4 grid grid-col-1 justify-items-stretch content-center ">
+              <div className="">
                 <FormField
                   control={form.control}
                   name="fullName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Full Name</FormLabel>
+                      <FormLabel>
+                        Full Name <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
@@ -146,45 +160,59 @@ const SignUp = () => {
             </div>
           </ContainerDiv>
           <ContainerDiv divId="photo" particleId="01">
-            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+            <div
+              className="h-screen max-sm:mx-4 grid grid-col-1 lg:justify-items-stretch content-center "
+              style={{
+                overflow: "hidden",
+              }}
+            >
               {uploadcareData && (
-                <>
-                  <div className="max-w-2xl  mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
-                    <div className="rounded-t-lg h-32 overflow-hidden">
+                <div className=" flex flex-col items-center space-y-2">
+                  <div className="h-24  w-full">
+                    <div className="flex-center">
                       <Image
-                        height={500}
+                        src={`https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ`}
                         width={500}
-                        className="object-cover object-top w-full"
-                        src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
-                        alt="Mountain"
-                      />
-                    </div>
-                    <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
-                      <Image
-                        className="rounded-full h-32 w-32 border border-primary-500 object-cover"
-                        src={uploadcareData ? uploadcareData : ""}
-                        alt="profile pic"
                         height={500}
-                        width={400}
+                        alt="profile pic"
+                        className="object-contain md:rounded-t-lg"
                       />
                     </div>
-                    <div className="text-center mt-2">
-                      <p className="text-gray-500">Your image preview</p>
-                    </div>
-
-                    <div className="p-4 border-t mx-8 mt-2"></div>
                   </div>
-                </>
+                  <div className="relative  max-sm:-mt-16 flex  overflow-hidden  ">
+                    <div className="flex h-full w-full items-center   justify-center   ">
+                      <Image
+                        src={uploadcareData}
+                        width={100}
+                        height={100}
+                        alt="profile pic"
+                        className="rounded-full h-32 w-32 border border-primary-500 object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <h3 className="whitespace-nowrap mt-16 max-sm:-mt-16 h2-bold text-light900_dark300">
+                      your profile preview
+                    </h3>
+                  </div>
+                </div>
               )}
-              <div>
+              <div className={styles.body}>
                 <FormField
                   control={form.control}
                   name="photo"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel> profile pic</FormLabel>
+                      <FormLabel>
+                        {" "}
+                        profile pic <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
-                        <>
+                        <div
+                          style={{
+                            overflow: "hidden",
+                          }}
+                        >
                           <lr-config
                             ctx-name="profipic"
                             pubkey="c691bad6580f6ff10d39"
@@ -192,11 +220,12 @@ const SignUp = () => {
                             multiple={false}
                             imgOnly={true}
                             sourceList="local, url, camera"
+                            {...field}
                           ></lr-config>
                           <lr-file-uploader-regular
                             css-src="https://cdn.jsdelivr.net/npm/@uploadcare/blocks@0.30.5/web/lr-file-uploader-regular.min.css"
                             ctx-name="profipic"
-                            class="my-config"
+                            class={styles.myConfig}
                           ></lr-file-uploader-regular>
                           <lr-data-output
                             ctx-name="profipic"
@@ -206,7 +235,7 @@ const SignUp = () => {
                             id="profipic"
                             ctx-name="profipic"
                           ></lr-upload-ctx-provider>
-                        </>
+                        </div>
                       </FormControl>
                       <FormDescription>
                         This is your public display Picture.
@@ -223,14 +252,16 @@ const SignUp = () => {
             </div>
           </ContainerDiv>
           <ContainerDiv divId="companyName" particleId="2">
-            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
-              <div className="ma">
+            <div className="h-screen max-sm:mx-4  grid grid-col-1 lg:justify-items-stretch content-center ">
+              <div className="mx-4">
                 <FormField
                   control={form.control}
                   name="companyName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Company Name</FormLabel>
+                      <FormLabel>
+                        Company Name <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
@@ -249,14 +280,16 @@ const SignUp = () => {
             </div>
           </ContainerDiv>
           <ContainerDiv divId="designation" particleId="2">
-            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+            <div className="h-screen max-sm:mx-4 grid grid-col-1 justify-items-stretch content-center ">
               <div className="ma">
                 <FormField
                   control={form.control}
                   name="designation"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>your designation</FormLabel>
+                      <FormLabel>
+                        your designation <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
@@ -275,39 +308,37 @@ const SignUp = () => {
             </div>
           </ContainerDiv>
           <ContainerDiv divId="companyPhoto" particleId="010">
-            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+            <div className="h-screen max-sm:mx-4 grid grid-col-1 justify-items-stretch content-center ">
               {companyPhotoUrl && (
-                <>
-                  <div className="max-w-2xl  mx-4 sm:max-w-sm md:max-w-sm lg:max-w-sm xl:max-w-sm sm:mx-auto md:mx-auto lg:mx-auto xl:mx-auto mt-16 bg-white shadow-xl rounded-lg text-gray-900">
-                    <div className="rounded-t-lg h-32 overflow-hidden">
+                <div className=" flex flex-col items-center space-y-2">
+                  <div className="h-24  w-full">
+                    <div className="flex-center">
                       <Image
-                        height={500}
+                        src={companyPhotoUrl}
                         width={500}
-                        className="object-cover object-top w-full"
-                        src={
-                          companyPhotoUrl
-                            ? `${companyPhotoUrl}`
-                            : "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=400&fit=max&ixid=eyJhcHBfaWQiOjE0NTg5fQ"
-                        }
-                        alt="Mountain"
-                      />
-                    </div>
-                    <div className="mx-auto w-32 h-32 relative -mt-16 border-4 border-white rounded-full overflow-hidden">
-                      <Image
-                        className="rounded-full h-32 w-32 border border-primary-500 object-cover"
-                        src={uploadcareData ? uploadcareData : ""}
-                        alt="profile pic"
                         height={500}
-                        width={400}
+                        alt="profile pic"
+                        className="object-contain md:rounded-t-lg"
                       />
                     </div>
-                    <div className="text-center mt-2">
-                      <p className="text-gray-500">Your image preview</p>
-                    </div>
-
-                    <div className="p-4 border-t mx-8 mt-2"></div>
                   </div>
-                </>
+                  <div className="relative -mt-16 flex  overflow-hidden  ">
+                    <div className="flex h-full w-full items-center   justify-center   ">
+                      <Image
+                        src={uploadcareData}
+                        width={100}
+                        height={100}
+                        alt="profile pic"
+                        className="rounded-full h-32 w-32 border border-primary-500 object-cover"
+                      />
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <h3 className="whitespace-nowrap   paragraph-regular lg:h2-bold text-light900_dark300">
+                      your profile preview
+                    </h3>
+                  </div>
+                </div>
               )}
               <div>
                 <FormField
@@ -315,7 +346,9 @@ const SignUp = () => {
                   name="companyPhoto"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>company logo</FormLabel>
+                      <FormLabel>
+                        company logo <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <>
                           <lr-config
@@ -356,14 +389,16 @@ const SignUp = () => {
             </div>
           </ContainerDiv>
           <ContainerDiv divId="aboutCompany" particleId="aboutCompany">
-            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
-              <div className="max-sm:mx-4 md:w-[70vw]">
+            <div className="lg:h-screen max-sm:mx-4 grid grid-col-1 justify-items-stretch content-center ">
+              <div className=" md:w-[70vw]">
                 <FormField
                   control={form.control}
                   name="aboutCompany"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>about Company</FormLabel>
+                      <FormLabel>
+                        about Company <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <Textarea
                           rows={10}
@@ -386,14 +421,16 @@ const SignUp = () => {
             </div>
           </ContainerDiv>
           <ContainerDiv divId="email" particleId="2">
-            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+            <div className="h-screen max-sm:mx-4 grid grid-col-1 justify-items-stretch content-center ">
               <div className="max-sm:mx-4">
                 <FormField
                   control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email Address</FormLabel>
+                      <FormLabel>
+                        Email Address <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
@@ -413,14 +450,16 @@ const SignUp = () => {
           </ContainerDiv>
 
           <ContainerDiv divId="personalPhoneNumber" particleId="3">
-            <div className="h-screen  grid grid-col-1 justify-items-stretch content-center ">
+            <div className="h-screen max-sm:mx-4 grid grid-col-1 justify-items-stretch content-center ">
               <div className="max-sm:mx-4">
                 <FormField
                   control={form.control}
                   name="personalPhoneNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Mobile No.</FormLabel>
+                      <FormLabel>
+                        Mobile No.<span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -451,7 +490,9 @@ const SignUp = () => {
                   name="personalWhatsapp"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Whatsapp no.</FormLabel>
+                      <FormLabel>
+                        Whatsapp no.<span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <Input
                           type="number"
@@ -483,7 +524,9 @@ const SignUp = () => {
                   name="companyInstagram"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Instagram</FormLabel>
+                      <FormLabel>
+                        Instagram<span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
@@ -509,7 +552,9 @@ const SignUp = () => {
                   name="facebookPageId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Facebook Id</FormLabel>
+                      <FormLabel>
+                        Facebook Id<span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>
@@ -537,7 +582,9 @@ const SignUp = () => {
                   name="companyWebsite"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Company Website</FormLabel>
+                      <FormLabel>
+                        Company Website<span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl className="">
                         <Input placeholder="Type your answer" {...field} />
                       </FormControl>

@@ -10,10 +10,9 @@ export interface UserParams {
   personalWhatsapp: string;
   companyName: string;
   aboutCompany?: string;
-  companyPhoto?: string;
+  companyPhoto: string;
   companyInstagram?: string;
   facebookPageId?: string;
-
   companyWebsite?: string;
 }
 

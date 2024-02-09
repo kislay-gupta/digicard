@@ -33,7 +33,7 @@ const NextButton = ({ text, lnk }: Props) => {
           {text}{" "}
         </span>
       </Link>
-      {text === "next" && (
+      {text === "today" && (
         <p className="max-sm:hidden my-auto ml-2 small-bold text-zinc-50">
           press <strong>Enter ↵ </strong>{" "}
         </p>
