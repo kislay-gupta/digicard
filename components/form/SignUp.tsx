@@ -215,7 +215,7 @@ const SignUp = () => {
                         >
                           <lr-config
                             ctx-name="profipic"
-                            pubkey="c691bad6580f6ff10d39"
+                            pubkey={process.env.UPLOADCARE_API_KEY}
                             maxLocalFileSizeBytes={10000000}
                             multiple={false}
                             imgOnly={true}
@@ -253,7 +253,7 @@ const SignUp = () => {
           </ContainerDiv>
           <ContainerDiv divId="companyName" particleId="2">
             <div className="h-screen max-sm:mx-4  grid grid-col-1 lg:justify-items-stretch content-center ">
-              <div className="mx-4">
+              <div className="">
                 <FormField
                   control={form.control}
                   name="companyName"

@@ -1,3 +1,4 @@
+import OtherCard from "@/components/card/OtherCard";
 import UserCard from "@/components/card/UserCard";
 import { getUserById } from "@/lib/action/user.action";
 
@@ -12,7 +13,7 @@ export default async function Page({ params, searchParams }: URLProps) {
   console.log(result, "test");
   return (
     <div className="grid overflow-auto grid-cols-1 content-center md:h-screen">
-      <UserCard data={result.user} />
+      <OtherCard data={result.user} />
     </div>
   );
 }

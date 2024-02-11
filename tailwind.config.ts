@@ -39,6 +39,7 @@ const config = {
           400: "#858EAD",
         },
         accent: "#1DA1F2",
+        shade_red: "#B70A4C",
       },
       keyframes: {
         "accordion-down": {
