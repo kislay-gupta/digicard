@@ -4,7 +4,7 @@ import React from "react";
 
 const Page = async () => {
   const results = await getAllUser();
-  console.log(results, "all user");
+  
   return (
     <div className="flex flex-col gap-2 mt-11">
       {results.users.map((data) => (

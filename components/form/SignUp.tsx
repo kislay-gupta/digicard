@@ -65,7 +65,7 @@ const SignUp = () => {
           const customEvent = e as CustomEvent;
 
           if (customEvent.detail) {
-            console.log(customEvent.detail, "profile pic");
+            
             setUploadcareData(customEvent.detail[0]?.cdnUrl);
           }
         });
@@ -79,9 +79,9 @@ const SignUp = () => {
           // Use type assertion to let TypeScript know it's a CustomEvent
           const customEvent2 = e as CustomEvent;
 
-          console.log(customEvent2, "companylogo event triggered");
+          
           if (customEvent2.detail) {
-            console.log(customEvent2.detail, "companylogo");
+            
             setCompanyPhotoUrl(customEvent2.detail[0]?.cdnUrl);
           }
         });
@@ -99,7 +99,7 @@ const SignUp = () => {
 
     // Remove event listener on component unmount
   }, []);
-  console.log(companyPhotoUrl, "company url");
+  
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof UserSchema>) {
     setIsSubmitting(true);
@@ -125,9 +125,9 @@ const SignUp = () => {
       setIsSubmitting(false);
       console.log(error);
       toast.warning("registration failed");
-      console.log(values);
+      
     }
-    console.log(values);
+    
   }
   // console.log(form.getValues, "kislay");
   return (

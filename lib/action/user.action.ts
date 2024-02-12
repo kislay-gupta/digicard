@@ -63,7 +63,7 @@ export async function getUserById(params: GetUserByIdParams) {
   try {
     connectToDatabase();
     const { userId } = params;
-    console.log(userId, "user id");
+
     const objectId = new mongoose.Types.ObjectId(userId);
 
     const user = await User.findOne({ _id: objectId });
