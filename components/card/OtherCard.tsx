@@ -96,7 +96,7 @@ const OtherCard = ({ data }: Props) => {
 
               <RWebShare
                 data={{
-                  url: `http://localhost:3000/${pathname}`,
+                  url: `https://digicard-xi.vercel.app/${pathname}`,
                 }}
                 onClick={() => console.log("shared successfully!")}
               >
