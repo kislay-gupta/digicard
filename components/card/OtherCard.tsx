@@ -102,7 +102,7 @@ const OtherCard = ({ data }: Props) => {
               >
                 <button className="inline-flex h-10 px-4 py-2 rounded border border-current  text-sm font-medium text-light-900 dark:text-primary-500  transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:text-indigo-500">
                   <Share className="mr-2 my-auto h-4 w-4" />
-                  <span className="my-auto">Save Card</span>
+                  <span className="my-auto">Share Card</span>
                 </button>
               </RWebShare>
             </div>
