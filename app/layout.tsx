@@ -29,9 +29,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className=" fixed bottom-2 left-4 m-auto z-50 ">
-            <ThemeToggle />
-          </div>
           {children}
           <Toaster closeButton richColors position="top-right" />
         </ThemeProvider>

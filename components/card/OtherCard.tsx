@@ -60,7 +60,7 @@ const OtherCard = ({ data }: Props) => {
       >
         <div className=" flex flex-col items-center space-y-2">
           <div className="h-48 lg:rounded-t-lg bg-shade_red dark:bg-primary w-full"></div>
-          <div className=" absolute   top-12 z-50 bg-white lg:rounded-none shadow-lg rounded-2xl w-80 lg:w-96 h-48 dark:bg-gray-800">
+          <div className=" absolute    top-12 z-10 bg-white lg:rounded-none shadow-lg rounded-2xl w-80 lg:w-96 h-48 dark:bg-gray-800">
             <div className="grid grid-cols-2  content-center ">
               <Image
                 height={500}
@@ -88,7 +88,7 @@ const OtherCard = ({ data }: Props) => {
 
         <div className="p-6 bg-[#292929] ">
           <div className="text-clip text-wrap   max-w-xs justify-items-center pt-12 mx-auto ">
-            <div className="flex gap-2">
+            <div className="flex gap-2 ">
               <Button onClick={onButtonClick} className="bg-shade_red ">
                 <Folder className="mr-2 h-4 w-4" />
                 Save Card
@@ -111,7 +111,7 @@ const OtherCard = ({ data }: Props) => {
             </p>
           </div>
           <h3 className="h2-bold text-light-900 my-4">Social</h3>
-          <div className="grid grid-cols-6  capitalize paragraph-regular gap-2 content-center ">
+          <div className="grid grid-cols-6 z-50   capitalize paragraph-regular gap-2 content-center ">
             <DetailBadge
               detailLink={`tel:${data.personalPhoneNumber}`}
               icon={
@@ -146,11 +146,11 @@ const OtherCard = ({ data }: Props) => {
             </div>
           </div>
         </div>
-        <div className="items-center p-4 flex justify-center">
+        {/* <div className="items-center p-4 flex justify-center">
           <button className="inline-flex bg-primary-500 text-primary-100 dark:text-dark-500 dark:bg-primary-100 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2">
             Contact
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
